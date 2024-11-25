@@ -28,6 +28,10 @@ def define_word():
 
     return jsonify({'definition': definition})
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=YOUR_PORT)
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=YOUR_PORT)
 
