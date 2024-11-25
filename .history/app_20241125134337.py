@@ -22,7 +22,7 @@ def get_spreadsheet_client():
     service = build('sheets', 'v4', credentials=creds)
     return service.spreadsheets()
 
-# sheet = get_spreadsheet_client().sheet1  # Assuming data goes to sheet1
+sheet = get_spreadsheet_client().sheet1  # Assuming data goes to sheet1
 
 def get_definition(word):
     url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
@@ -48,21 +48,10 @@ def define_word():
         return jsonify({'error': 'Word not found'}), 404
 
     # Check if the word already exists in the sheet
-    sheet_id = 'YOUR_SHEET_ID'
-    range_name = 'Sheet1!A:A'  # Assuming the word is in the first column
-
-    result = service.spreadsheets().values().get(
-        spreadsheetId=sheet_id, range=range_name).execute()
-    values = result.get('values', [])
-
-    if word not in [row[0] for row in values]:
+    existing_words = sheet.col_values(1)  # Assuming the word is in the first column
+    if word not in existing_words:
         try:
-            sheet.values().append(
-                spreadsheetId=sheet_id,
-                range="Sheet1",
-                valueInputOption="RAW",
-                body={"values": [[word, definition]]}
-            ).execute()
+            sheet.append_row([word, definition])
         except Exception as e:
             print(f"Error adding data to Google Sheet: {e}")
             return jsonify({'error': 'Error saving data'}), 500
