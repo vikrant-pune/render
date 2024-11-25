@@ -4,7 +4,6 @@ import requests
 # Your existing code for get_definition and define_word functions...
 
 # Import for Google Sheet interaction
-import gspread
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
@@ -74,4 +73,4 @@ def hello_world():
     return 'Hello, World!'
 
 # if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=YOUR_PORT)
+#     app.run(host='0.0.0.0', port=5000)
