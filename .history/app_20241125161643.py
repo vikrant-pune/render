@@ -1,5 +1,4 @@
 import os
-import pprint
 from flask import Flask, json, request, jsonify
 import requests
 
@@ -21,10 +20,7 @@ def get_spreadsheet_client():
     """
     creds = Credentials.from_service_account_info(json.loads(os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')))
     service = build('sheets', 'v4', credentials=creds)
-    return service
-
-service = get_spreadsheet_client()  # Call this outside the function
-sheet = service.spreadsheets()
+    return service.spreadsheets()
 
 
 def get_definition(word):
@@ -33,9 +29,8 @@ def get_definition(word):
 
     response = requests.get(url, headers=headers)
     data = response.json()
-    print(data)
 
-    if 'title' in data and data['title'] == 'No Definitions Found':
+    if 'title' in data and data['title'] == 'No Definitions found for that word.':
         return None
 
     definition = data[0]['meanings'][0]['definitions'][0]['definition']
@@ -48,13 +43,14 @@ def define_word():
         return jsonify({'error': 'Word not provided'}), 400
 
     definition = get_definition(word)
-
     if not definition:
         return jsonify({'error': 'Word not found'}), 404
 
     # Check if the word already exists in the sheet
     sheet_id = '1u66N0434tIDw2AlCOIR5UwtQ3DKv-KcwOunCIWV5Wxs'
     range_name = 'Sheet1!A:A'  # Assuming the word is in the first column
+
+    service = get_spreadsheet_client()
 
     result = service.spreadsheets().values().get(
         spreadsheetId=sheet_id, range=range_name).execute()
@@ -78,5 +74,5 @@ def define_word():
 def hello_world():
     return 'Hello, World!'
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

@@ -1,5 +1,4 @@
 import os
-import pprint
 from flask import Flask, json, request, jsonify
 import requests
 
@@ -33,9 +32,8 @@ def get_definition(word):
 
     response = requests.get(url, headers=headers)
     data = response.json()
-    print(data)
 
-    if 'title' in data and data['title'] == 'No Definitions Found':
+    if 'title' in data and data['title'] == 'No Definitions found for that word.':
         return None
 
     definition = data[0]['meanings'][0]['definitions'][0]['definition']
@@ -48,6 +46,7 @@ def define_word():
         return jsonify({'error': 'Word not provided'}), 400
 
     definition = get_definition(word)
+    print(definition);
 
     if not definition:
         return jsonify({'error': 'Word not found'}), 404
@@ -78,5 +77,5 @@ def define_word():
 def hello_world():
     return 'Hello, World!'
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
