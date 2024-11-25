@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+from oauth2client.service_account import ServiceAccountCredentials 1   # for gspread
 
 # Your existing code for get_definition and define_word functions...
 
@@ -64,3 +65,4 @@ def hello_world():
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=YOUR_PORT)
+
